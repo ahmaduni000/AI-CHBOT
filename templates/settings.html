@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Settings - {{ app_name|default('Nebula AI') }}{% endblock %}
+{% block body %}
+<div class="settings-page">
+    <div class="settings-container glass">
+        <header class="settings-header">
+            <a href="{{ url_for('main.index') }}" class="btn btn-ghost btn-sm">← Back to chat</a>
+            <h1>Settings</h1>
+        </header>
+
+        <div class="settings-tabs">
+            <button class="tab-btn active" data-tab="preferences">Preferences</button>
+            <button class="tab-btn" data-tab="profile">Profile & Security</button>
+        </div>
+
+        <!-- Preferences -->
+        <section class="settings-section active" id="tab-preferences">
+            <form id="prefs-form" class="settings-form">
+                <div class="field">
+                    <label>Theme</label>
+                    <div class="theme-toggle-group">
+                        <button type="button" class="theme-opt" data-theme="dark">🌙 Dark</button>
+                        <button type="button" class="theme-opt" data-theme="light">☀️ Light</button>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="model">Model</label>
+                    <input type="text" id="model" name="model" value="{{ model }}" placeholder="default model">
+                    <small class="hint">Leave blank to use the server default ({{ model }}).</small>
+                </div>
+
+                <div class="field">
+                    <label for="temperature">Temperature: <span id="temp-val">0.7</span></label>
+                    <input type="range" id="temperature" name="temperature" min="0" max="2" step="0.1" value="0.7">
+                    <small class="hint">Lower = more focused, higher = more creative.</small>
+                </div>
+
+                <div class="field">
+                    <label for="max_tokens">Max Tokens</label>
+                    <input type="number" id="max_tokens" name="max_tokens" min="64" max="8192" step="64" value="2048">
+                </div>
+
+                <div class="field checkbox-field">
+                    <label class="checkbox">
+                        <input type="checkbox" id="send_on_enter" name="send_on_enter" checked>
+                        <span>Send message on Enter (Shift+Enter for newline)</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save Preferences</button>
+            </form>
+        </section>
+
+        <!-- Profile -->
+        <section class="settings-section" id="tab-profile">
+            <div class="profile-info glass-soft">
+                <div class="avatar-lg" id="profile-avatar">U</div>
+                <div>
+                    <h2 id="profile-username">Username</h2>
+                    <p id="profile-email">email@example.com</p>
+                </div>
+            </div>
+
+            <form id="pw-form" class="settings-form">
+                <h3>Change Password</h3>
+                <div class="field">
+                    <label for="current_password">Current Password</label>
+                    <input type="password" id="current_password" name="current_password" required minlength="8">
+                    <span class="field-error" data-for="current_password"></span>
+                </div>
+                <div class="field">
+                    <label for="new_password">New Password</label>
+                    <input type="password" id="new_password" name="new_password" required minlength="8">
+                    <span class="field-error" data-for="new_password"></span>
+                </div>
+                <div class="field">
+                    <label for="confirm_password">Confirm New Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required minlength="8">
+                    <span class="field-error" data-for="confirm_password"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Password</button>
+            </form>
+        </section>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    window.USER_SETTINGS = {{ settings|tojson|safe }};
+    window.PROFILE = {{ (current_user.to_dict() if current_user.is_authenticated else {})|tojson|safe }};
+</script>
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

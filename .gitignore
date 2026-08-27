@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Environment
+.env
+
+# Database
+database/*.db
+database/*.db-journal
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.log
+
+# Uploads (user content)
+static/uploads/*
+!static/uploads/.gitkeep

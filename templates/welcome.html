@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ app_name }} - Your AI Assistant{% endblock %}
+{% block body %}
+<div class="welcome">
+    <div class="welcome-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    <nav class="welcome-nav glass">
+        <div class="brand">
+            <div class="brand-logo">✦</div>
+            <span class="brand-name">{{ app_name }}</span>
+        </div>
+        <div class="welcome-actions">
+            <a href="{{ url_for('auth.signin') }}" class="btn btn-ghost">Sign In</a>
+            <a href="{{ url_for('auth.signup') }}" class="btn btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <main class="welcome-hero">
+        <div class="hero-badge glass">⚡ Powered by {{ model }}</div>
+        <h1 class="hero-title">
+            Chat with the future.<br>
+            <span class="gradient-text">Intelligent. Fast. Secure.</span>
+        </h1>
+        <p class="hero-sub">
+            A premium AI assistant that helps you write, code, learn, and create —
+            all in a beautiful, private, and secure environment.
+        </p>
+        <div class="hero-cta">
+            <a href="{{ url_for('auth.signup') }}" class="btn btn-primary btn-lg">Start Chatting Free</a>
+            <a href="{{ url_for('auth.signin') }}" class="btn btn-ghost btn-lg">I already have an account</a>
+        </div>
+        <div class="hero-features">
+            <div class="feature-card glass">
+                <div class="feature-icon">🧠</div>
+                <h3>Smart Conversations</h3>
+                <p>Context-aware responses with streaming, markdown & code.</p>
+            </div>
+            <div class="feature-card glass">
+                <div class="feature-icon">🔒</div>
+                <h3>Private & Secure</h3>
+                <p>Your API keys stay server-side. Passwords are hashed.</p>
+            </div>
+            <div class="feature-card glass">
+                <div class="feature-icon">🎨</div>
+                <h3>Beautiful UI</h3>
+                <p>Glassmorphism, dark/light mode, and smooth animations.</p>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

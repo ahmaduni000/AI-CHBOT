@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Sign In' if mode == 'signin' else 'Sign Up' }} - {{ app_name|default('Nebula AI') }}{% endblock %}
+{% block body %}
+<div class="auth-page">
+    <div class="auth-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+    <div class="auth-card glass">
+        <div class="auth-brand">
+            <div class="brand-logo">✦</div>
+            <span class="brand-name">{{ app_name|default('Nebula AI') }}</span>
+        </div>
+
+        <h1 class="auth-title" id="auth-title">
+            {{ 'Welcome back' if mode == 'signin' else 'Create your account' }}
+        </h1>
+        <p class="auth-sub" id="auth-sub">
+            {{ 'Sign in to continue to your AI assistant.' if mode == 'signin' else 'Start your AI journey in seconds.' }}
+        </p>
+
+        <form id="auth-form" class="auth-form" novalidate>
+            {% if mode == 'signup' %}
+            <div class="field">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" autocomplete="username"
+                       placeholder="johndoe" required minlength="3" maxlength="30">
+                <span class="field-error" data-for="username"></span>
+            </div>
+            {% endif %}
+            <div class="field">
+                <label for="identifier">{{ 'Username or Email' if mode == 'signin' else 'Email' }}</label>
+                <input type="{{ 'text' if mode == 'signin' else 'email' }}" id="identifier" name="identifier"
+                       autocomplete="email" placeholder="you@example.com" required>
+                <span class="field-error" data-for="identifier"></span>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <div class="input-wrap">
+                    <input type="password" id="password" name="password" autocomplete="current-password"
+                           placeholder="••••••••" required minlength="8">
+                    <button type="button" class="toggle-pw" aria-label="Show password">👁</button>
+                </div>
+                <span class="field-error" data-for="password"></span>
+            </div>
+            {% if mode == 'signup' %}
+            <div class="field">
+                <label for="confirm_password">Confirm Password</label>
+                <div class="input-wrap">
+                    <input type="password" id="confirm_password" name="confirm_password"
+                           autocomplete="new-password" placeholder="••••••••" required minlength="8">
+                    <button type="button" class="toggle-pw" aria-label="Show password">👁</button>
+                </div>
+                <span class="field-error" data-for="confirm_password"></span>
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary btn-block btn-lg" id="auth-submit">
+                <span class="btn-label">{{ 'Sign In' if mode == 'signin' else 'Create Account' }}</span>
+                <span class="spinner" hidden></span>
+            </button>
+        </form>
+
+        <p class="auth-switch">
+            {% if mode == 'signin' %}
+                New here? <a href="{{ url_for('auth.signup') }}">Create an account</a>
+            {% else %}
+                Already have an account? <a href="{{ url_for('auth.signin') }}">Sign in</a>
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    window.AUTH_MODE = "{{ mode }}";
+    window.AUTH_SIGNIN_URL = "{{ url_for('auth.signin') }}";
+    window.AUTH_SIGNUP_URL = "{{ url_for('auth.signup') }}";
+</script>
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+{% endblock %}
