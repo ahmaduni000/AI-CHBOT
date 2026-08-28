@@ -26,10 +26,12 @@ class Config:
     SESSION_COOKIE_SAMESITE = "Lax"
 
     # --- AI Provider (OpenAI-compatible) ---
-    # OPENCODE / DeepSeek V4 Flash Free endpoint
+    # Set AI_PROVIDER to "openai" (or any OpenAI-compatible endpoint) to use a real
+    # model, or "mock" to use the built-in offline demo responder (no API key needed).
+    AI_PROVIDER = os.getenv("AI_PROVIDER", "mock").lower()
     AI_API_KEY = os.getenv("AI_API_KEY", "")
     AI_BASE_URL = os.getenv("AI_BASE_URL", "https://api.openai.com/v1")
-    AI_MODEL = os.getenv("AI_MODEL", "deepseek-v4-flash-free")
+    AI_MODEL = os.getenv("AI_MODEL", "gpt-3.5-turbo")
     AI_TEMPERATURE = float(os.getenv("AI_TEMPERATURE", "0.7"))
     AI_MAX_TOKENS = int(os.getenv("AI_MAX_TOKENS", "2048"))
     AI_TIMEOUT = int(os.getenv("AI_TIMEOUT", "60"))
