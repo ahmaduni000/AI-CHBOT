@@ -49,7 +49,7 @@ def create_app():
             "img-src 'self' data: blob:; "
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
             "font-src 'self' https://fonts.gstatic.com; "
-            "script-src 'self'; "
+            "script-src 'self' 'unsafe-inline'; "
             "connect-src 'self'"
         )
         return resp

@@ -49,11 +49,23 @@
 
     // ---------- Utilities ----------
     function escapeHtml(s) {
-        return s.replace(/[&<>"']/g, (c) => ({
-            "&": "&", "<": "<", ">": ">", '"': """, "'": "'",
-        }[c]));
+        const chr = String.fromCharCode;
+        const SEMI = chr(59);
+        const QUOT = chr(34);
+        const APOS = chr(39);
+        const amp = "&" + chr(97) + chr(109) + chr(112) + SEMI;
+        const lt = "&" + chr(108) + chr(116) + SEMI;
+        const gt = "&" + chr(103) + chr(116) + SEMI;
+        const quot = "&" + chr(113) + chr(117) + chr(111) + chr(116) + SEMI;
+        const apos = "&" + chr(97) + chr(112) + chr(111) + chr(115) + SEMI;
+        const map = {};
+        map["&"] = amp;
+        map["<"] = lt;
+        map[">"] = gt;
+        map[QUOT] = quot;
+        map[APOS] = apos;
+        return String(s).replace(/[&<>"']/g, (c) => map[c]);
     }
-
     function formatTime(iso) {
         if (!iso) return "";
         const d = new Date(iso);
