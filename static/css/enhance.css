@@ -1,0 +1,294 @@
+/* ============================================================
+   Nebula AI — Enhancement styles
+   Search icon, rename/theme buttons, slash hint, polish, animations
+   ============================================================ */
+
+/* Search input with icon */
+.search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-wrap .search-ico {
+    position: absolute;
+    left: 14px;
+    font-size: 13px;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.search-wrap #search-conv {
+    width: 100%;
+    padding: 11px 14px 11px 36px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--glass-border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+    transition: border-color var(--speed), box-shadow var(--speed);
+}
+
+.search-wrap #search-conv:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(124, 131, 255, 0.18);
+}
+
+/* Chat title (clickable to rename) */
+.chat-title {
+    cursor: pointer;
+    transition: color var(--speed);
+}
+
+.chat-title:hover {
+    color: var(--accent);
+}
+
+/* Header icon buttons get a subtle hover lift */
+.chat-header-actions .icon-btn,
+.user-menu-wrap .icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    transition: background var(--speed), transform var(--speed), color var(--speed);
+}
+
+.chat-header-actions .icon-btn:hover,
+.user-menu-wrap .icon-btn:hover {
+    background: var(--surface-2);
+    transform: translateY(-2px);
+}
+
+/* Theme toggle spin */
+#theme-toggle:active {
+    transform: rotate(180deg);
+    transition: transform 0.5s ease;
+}
+
+/* Message hover polish */
+.message {
+    transition: transform var(--speed), background var(--speed);
+    border-radius: var(--radius);
+}
+
+.message:hover {
+    background: var(--surface);
+}
+
+.msg-actions {
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity var(--speed), transform var(--speed);
+}
+
+.message:hover .msg-actions {
+    opacity: 1;
+    transform: none;
+}
+
+.msg-action {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 9px;
+    background: var(--surface-2);
+    color: var(--text-dim);
+    transition: background var(--speed), color var(--speed);
+}
+
+.msg-action:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* Empty state glow */
+.empty-orb {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    background: conic-gradient(from 0deg, var(--grad-1), var(--grad-2), var(--grad-3), var(--grad-1));
+    filter: blur(2px);
+    box-shadow: var(--glow);
+    animation: float 6s ease-in-out infinite;
+}
+
+.empty-state h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    background: linear-gradient(120deg, var(--text), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.empty-state p {
+    color: var(--text-dim);
+    max-width: 420px;
+    margin: 0 auto 28px;
+}
+
+/* Quick prompts */
+.quick-prompts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.quick-prompt {
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--glass-border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13.5px;
+    text-align: left;
+    transition: transform var(--speed), border-color var(--speed), background var(--speed);
+}
+
+.quick-prompt:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    background: var(--surface-2);
+}
+
+/* Composer hint */
+.composer-hint {
+    text-align: center;
+    font-size: 11.5px;
+    color: var(--text-faint);
+    margin-top: 8px;
+}
+
+.composer-hint kbd {
+    background: var(--surface-2);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    padding: 1px 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+}
+
+/* User menu items */
+.menu-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 13.5px;
+    transition: background var(--speed);
+}
+
+.menu-item:hover {
+    background: var(--surface-2);
+}
+
+/* Send button gradient */
+.send-btn {
+    background: linear-gradient(135deg, var(--grad-1), var(--grad-2));
+    color: #fff;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: var(--glow);
+    transition: transform var(--speed), filter var(--speed);
+}
+
+.send-btn:hover {
+    transform: scale(1.06);
+    filter: brightness(1.1);
+}
+
+/* New chat button glow */
+.new-chat-btn {
+    background: linear-gradient(135deg, var(--grad-1), var(--grad-2));
+    color: #fff;
+    border: none;
+    box-shadow: var(--glow);
+    font-weight: 600;
+    transition: transform var(--speed), filter var(--speed);
+}
+
+.new-chat-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}
+
+/* Conversation item hover */
+.conv-item {
+    transition: background var(--speed), transform var(--speed);
+}
+
+.conv-item:hover {
+    background: var(--surface-2);
+    transform: translateX(2px);
+}
+
+.conv-item.active {
+    background: linear-gradient(90deg, rgba(124, 131, 255, 0.18), transparent);
+    border-left: 3px solid var(--accent);
+}
+
+/* Typing indicator */
+.typing {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    padding: 4px 0;
+}
+
+.typing span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: typing 1.2s infinite ease-in-out;
+}
+
+.typing span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.4;
+    }
+
+    30% {
+        transform: translateY(-6px);
+        opacity: 1;
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+}

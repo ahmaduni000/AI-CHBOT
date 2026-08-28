@@ -17,6 +17,7 @@
         </button>
 
         <div class="search-wrap">
+            <span class="search-ico">🔍</span>
             <input type="text" id="search-conv" placeholder="Search conversations…" aria-label="Search conversations">
         </div>
 
@@ -41,6 +42,7 @@
                 <div class="user-menu-wrap">
                     <button class="icon-btn" id="user-menu-btn" aria-label="User menu">⋯</button>
                     <div class="user-menu glass" id="user-menu" hidden>
+                        <button class="menu-item" id="theme-toggle-menu">🌗 Toggle Theme</button>
                         <a href="{{ url_for('settings.index') }}" class="menu-item">⚙️ Settings</a>
                         <a href="{{ url_for('auth.logout') }}" class="menu-item">⎋ Logout</a>
                     </div>
@@ -56,11 +58,13 @@
         <header class="chat-header glass">
             <button class="icon-btn menu-toggle" id="menu-toggle" aria-label="Open sidebar">☰</button>
             <div class="chat-title-wrap">
-                <h1 class="chat-title" id="chat-title">New Chat</h1>
+                <h1 class="chat-title" id="chat-title" title="Click to rename">New Chat</h1>
                 <span class="chat-subtitle" id="chat-subtitle">{{ model }}</span>
             </div>
             <div class="chat-header-actions">
+                <button class="icon-btn" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">🌗</button>
                 <button class="icon-btn" id="pin-chat" title="Pin chat" aria-label="Pin chat">📌</button>
+                <button class="icon-btn" id="rename-chat" title="Rename chat" aria-label="Rename chat">✏️</button>
                 <button class="icon-btn" id="export-chat" title="Export chat" aria-label="Export chat">⬇️</button>
                 <button class="icon-btn" id="clear-chat" title="Clear chat" aria-label="Clear chat">🧹</button>
                 <button class="icon-btn" id="delete-chat" title="Delete chat" aria-label="Delete chat">🗑</button>
@@ -78,6 +82,8 @@
                     <button class="quick-prompt" data-prompt="Explain quantum computing like I'm five.">⚛️ Explain quantum computing</button>
                     <button class="quick-prompt" data-prompt="Draft a professional email to reschedule a meeting.">✉️ Draft an email</button>
                     <button class="quick-prompt" data-prompt="Give me 5 creative business name ideas for a coffee brand.">💡 Business name ideas</button>
+                    <button class="quick-prompt" data-prompt="Write a short poem about the night sky.">🌌 Write a poem</button>
+                    <button class="quick-prompt" data-prompt="Summarize the benefits of a Mediterranean diet.">🥗 Healthy diet tips</button>
                 </div>
             </div>
         </div>
@@ -91,7 +97,7 @@
                 <button type="button" class="icon-btn stop-btn" id="stop-btn" hidden aria-label="Stop generating">⏹</button>
                 <button type="submit" class="icon-btn send-btn" id="send-btn" aria-label="Send message">➤</button>
             </form>
-            <div class="composer-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift</kbd>+<kbd>Enter</kbd> for newline</div>
+            <div class="composer-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift</kbd>+<kbd>Enter</kbd> for newline · <kbd>/</kbd> for commands</div>
         </div>
     </main>
 </div>
@@ -141,6 +147,7 @@
             deleteConv: "{{ url_for('chat.delete_conversation', conv_id=0) }}".replace('/0', '/__CID__'),
             clearConv: "{{ url_for('chat.clear_conversation', conv_id=0) }}".replace('/0', '/__CID__'),
             pinConv: "{{ url_for('chat.pin_conversation', conv_id=0) }}".replace('/0', '/__CID__'),
+            renameConv: "{{ url_for('chat.rename_conversation', conv_id=0) }}".replace('/0', '/__CID__'),
             editMsg: "{{ url_for('chat.edit_message', conv_id=0, msg_id=0) }}".replace('/0', '/__CID__'),
             deleteMsg: "{{ url_for('chat.delete_message', conv_id=0, msg_id=0) }}".replace('/0', '/__CID__'),
             exportConv: "{{ url_for('chat.export_conversation', conv_id=0) }}".replace('/0', '/__CID__'),

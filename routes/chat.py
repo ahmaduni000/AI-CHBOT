@@ -65,6 +65,23 @@ def delete_conversation(conv_id):
     return jsonify({"success": True})
 
 
+@chat_bp.route("/conversations/<int:conv_id>/rename", methods=["POST"])
+@login_required
+def rename_conversation(conv_id):
+    conv, err, code = _get_conv(conv_id)
+    if err:
+        return err, code
+    data = request.get_json(silent=True) or request.form
+    title = (data.get("title") or "").strip()
+    if not title:
+        return jsonify({"error": "Title cannot be empty."}), 400
+    if len(title) > 200:
+        title = title[:200]
+    conv.title = title
+    db.session.commit()
+    return jsonify({"success": True, "id": conv.id, "title": conv.title})
+
+
 @chat_bp.route("/conversations/<int:conv_id>/pin", methods=["POST"])
 @login_required
 def pin_conversation(conv_id):

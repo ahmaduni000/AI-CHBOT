@@ -38,11 +38,14 @@
         chatTitle: $("#chat-title"),
         chatSubtitle: $("#chat-subtitle"),
         pinChat: $("#pin-chat"),
+        renameChat: $("#rename-chat"),
         exportChat: $("#export-chat"),
         clearChat: $("#clear-chat"),
         deleteChat: $("#delete-chat"),
+        themeToggle: $("#theme-toggle"),
         userMenuBtn: $("#user-menu-btn"),
         userMenu: $("#user-menu"),
+        themeToggleMenu: $("#theme-toggle-menu"),
         msgTemplate: $("#msg-template"),
         quickPrompts: $("#quick-prompts"),
     };
@@ -76,12 +79,7 @@
         return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
-    // Render markdown on the server side is not available for streaming; we do a
-    // lightweight client render. For final stored content we re-fetch rendered HTML
-    // from server via /api/conversations/<id> (messages endpoint returns raw text).
-    // To keep it simple and safe, we render markdown client-side with a small parser.
     function renderMarkdown(text) {
-        // Use a minimal, safe markdown renderer (no raw HTML injection).
         return window.MiniMarkdown.render(text);
     }
 
@@ -119,6 +117,18 @@
             throw new Error(msg);
         }
         return res.json();
+    }
+
+    // ---------- Theme ----------
+    function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        try { localStorage.setItem("nebula-theme", theme); } catch (e) { }
+    }
+    function toggleTheme() {
+        const cur = document.documentElement.getAttribute("data-theme") || "dark";
+        const next = cur === "dark" ? "light" : "dark";
+        applyTheme(next);
+        toast(`Switched to ${next} mode`, "info");
     }
 
     // ---------- Conversations ----------
@@ -203,6 +213,24 @@
         } catch (e) { toast(e.message, "error"); }
     }
 
+    async function renameConversation() {
+        if (!state.convId) { toast("Open a chat first", "info"); return; }
+        const current = els.chatTitle.textContent;
+        const title = prompt("Rename this chat:", current);
+        if (title === null) return;
+        const t = title.trim();
+        if (!t) { toast("Title cannot be empty", "error"); return; }
+        try {
+            const r = await api(CFG.urls.renameConv.replace("__CID__", state.convId),
+                { method: "POST", body: JSON.stringify({ title: t }) });
+            els.chatTitle.textContent = r.title;
+            const local = state.conversations.find((x) => x.id === state.convId);
+            if (local) local.title = r.title;
+            renderConvList();
+            toast("Renamed", "success");
+        } catch (e) { toast(e.message, "error"); }
+    }
+
     function resetChatView() {
         els.messages.innerHTML = "";
         els.messages.appendChild(els.emptyState);
@@ -273,7 +301,6 @@
         if (!text) return;
 
         if (!state.convId) {
-            // create conversation first
             try {
                 const c = await api(CFG.urls.newConv, { method: "POST", body: JSON.stringify({ title: "New Chat" }) });
                 state.conversations.unshift(c);
@@ -348,7 +375,6 @@
             assistantNode.querySelector(".msg-time").textContent = nowTime();
             $(".messages-inner").appendChild(assistantNode);
             scrollToBottom();
-            // refresh title if changed
             loadConversations();
         } catch (e) {
             typing.remove();
@@ -522,14 +548,30 @@
         els.fileInput.value = "";
     }
 
-    // ---------- Theme ----------
-    function applyTheme(theme) {
-        document.documentElement.setAttribute("data-theme", theme);
+    // ---------- Slash commands ----------
+    const SLASH_COMMANDS = [
+        { cmd: "/new", desc: "Start a new chat" },
+        { cmd: "/rename", desc: "Rename current chat" },
+        { cmd: "/clear", desc: "Clear current chat" },
+        { cmd: "/export", desc: "Export current chat" },
+        { cmd: "/theme", desc: "Toggle light/dark theme" },
+        { cmd: "/pin", desc: "Pin/unpin current chat" },
+    ];
+    function handleSlashCommand(raw) {
+        const cmd = raw.trim().toLowerCase();
+        if (cmd === "/new") { newConversation(); return true; }
+        if (cmd === "/rename") { renameConversation(); return true; }
+        if (cmd === "/clear") { clearChat(); return true; }
+        if (cmd === "/export") { exportChat(); return true; }
+        if (cmd === "/theme") { toggleTheme(); return true; }
+        if (cmd === "/pin") { pinChat(); return true; }
+        return false;
     }
 
     // ---------- Init ----------
     function init() {
-        applyTheme(CFG.theme || "dark");
+        const saved = (() => { try { return localStorage.getItem("nebula-theme"); } catch (e) { return null; } })();
+        applyTheme(saved || CFG.theme || "dark");
         loadConversations();
 
         els.newChat.addEventListener("click", newConversation);
@@ -542,22 +584,32 @@
         els.prompt.addEventListener("input", autoGrow);
         els.prompt.addEventListener("keydown", (e) => {
             const enterSends = CFG.settings.send_on_enter !== false;
-            if (e.key === "Enter" && !e.shiftKey && enterSends) { e.preventDefault(); sendMessage(els.prompt.value); }
+            if (e.key === "Enter" && !e.shiftKey && enterSends) {
+                e.preventDefault();
+                const v = els.prompt.value;
+                if (v.startsWith("/") && handleSlashCommand(v)) { els.prompt.value = ""; autoGrow(); return; }
+                sendMessage(v);
+            }
         });
         els.stopBtn.addEventListener("click", stopGeneration);
         els.attachBtn.addEventListener("click", () => els.fileInput.click());
         els.fileInput.addEventListener("change", (e) => handleFiles(e.target.files));
 
         els.pinChat.addEventListener("click", pinChat);
+        els.renameChat.addEventListener("click", renameConversation);
         els.exportChat.addEventListener("click", exportChat);
         els.clearChat.addEventListener("click", clearChat);
         els.deleteChat.addEventListener("click", deleteChat);
+        els.themeToggle.addEventListener("click", toggleTheme);
+        if (els.themeToggleMenu) els.themeToggleMenu.addEventListener("click", (e) => { e.stopPropagation(); toggleTheme(); });
 
         els.userMenuBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             els.userMenu.hidden = !els.userMenu.hidden;
         });
         document.addEventListener("click", () => { els.userMenu.hidden = true; });
+
+        els.chatTitle.addEventListener("click", renameConversation);
 
         if (els.quickPrompts) {
             els.quickPrompts.addEventListener("click", (e) => {
